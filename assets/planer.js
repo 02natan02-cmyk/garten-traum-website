@@ -372,7 +372,7 @@
     if (navigator.canShare && navigator.canShare({ files: [f] })) { try { await navigator.share({ files: [f], title: 'Der Garten-Traum', text: tx('share') + '\n' + summary() }); } catch (e) {} }
     else { const a = document.createElement('a'); a.download = 'mein-garten-traum.jpg'; a.href = URL.createObjectURL(b); a.click(); window.open((G.wa || 'https://wa.me/4917647161931') + '?text=' + encodeURIComponent(tx('share') + ':\n' + summary()), '_blank', 'noopener'); }
   });
-  function summary() { const c = {}; S.items.forEach(it => c[it.k] = (c[it.k] || 0) + 1); return Object.entries(c).map(([k, n]) => `${n}× ${PROD[k].n}`).join(', '); }
+  function summary(lang) { const pl = (lang || L()) === 'pl', c = {}; S.items.forEach(it => c[it.k] = (c[it.k] || 0) + 1); return Object.entries(c).map(([k, n]) => `${n}× ${pl ? (PROD[k].pl || PROD[k].n) : PROD[k].n}`).join(', '); }
   const API = { add: k => { touch(); add(k); }, hasItems: () => !demo && S.items.length > 0, summary, getBlob: blob, attach: false };
   window.GTP = API;
   $('[data-plsend]').addEventListener('click', async e => {
