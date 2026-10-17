@@ -32,7 +32,9 @@
   }
   $$('[data-lang]').forEach(b => b.addEventListener('click', () => setLang(b.dataset.lang)));
   const qLang = new URLSearchParams(location.search).get('lang');
-  const startLang = qLang || store.get('gt-lang') || ((navigator.languages || [navigator.language || '']).some(x => /^pl/i.test(x)) ? 'pl' : 'de');
+  // Erstbesuch: nur die ERSTE Sprache des Geräts zählt – Polnisch als Hauptsprache → PL, alle anderen (auch Deutsch mit Polnisch als Zweitsprache) → DE
+  const devLang = (navigator.languages && navigator.languages[0]) || navigator.language || '';
+  const startLang = qLang || store.get('gt-lang') || (/^pl(-|$)/i.test(devLang) ? 'pl' : 'de');
 
   /* ---------------- Toast ---------------- */
   const toastEl = $('[data-toast]'); let toastT;
