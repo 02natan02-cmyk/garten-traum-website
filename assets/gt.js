@@ -11,8 +11,8 @@
 
   /* ---------------- Sprache DE / PL ---------------- */
   const T = {
-    de: { open: 'Jetzt geöffnet', closed: 'Geschlossen', until: 'bis 18:30 Uhr', opens: 'öffnet', today: 'heute', tomorrow: 'morgen', mon: 'Montag', at: 'um', free: 'Lieferung kostenlos', cost: 'Lieferung ca.', ask: 'Preis für die Lieferung auf Anfrage', km: 'ca. {k} km Straße von Kirkel', min: 'Unter 1.000 € Einkaufswert: Lieferpreis bitte kurz anfragen.', yours: 'Ihr Ort', pick: 'Ort antippen oder Nadel setzen', sent: 'Danke! Ihre Anfrage ist angekommen.', askMsg: 'Hallo, ich interessiere mich für: {n}. Bitte um Preis und Verfügbarkeit.', dealMsg: 'Hallo, ich interessiere mich für Restposten / Sonderangebote. Was ist noch da?', toPlan: '„{n}“ steht jetzt in Ihrem Garten – ziehen Sie es an die richtige Stelle.', gaMsg: 'Hallo, wir möchten eine Gaststube / einen Biergarten mit Massivholz einrichten. Bitte um einen Rückruf.' },
-    pl: { open: 'Teraz otwarte', closed: 'Zamknięte', until: 'do 18:30', opens: 'otwarcie', today: 'dziś', tomorrow: 'jutro', mon: 'w poniedziałek', at: 'o', free: 'Dostawa bezpłatna', cost: 'Dostawa ok.', ask: 'Cena dostawy na zapytanie', km: 'ok. {k} km drogą od Kirkel', min: 'Przy zakupach poniżej 1000 €: prosimy zapytać o cenę dostawy.', yours: 'Twoje miejsce', pick: 'Dotknij miejscowości albo postaw pinezkę', sent: 'Dziękujemy! Twoje zapytanie dotarło.', askMsg: 'Dzień dobry, interesuje mnie: {n}. Proszę o cenę i dostępność.', dealMsg: 'Dzień dobry, interesują mnie ostatnie sztuki / oferty specjalne. Co jeszcze jest dostępne?', toPlan: '„{n}” stoi teraz w Twoim ogrodzie – przeciągnij w odpowiednie miejsce.', gaMsg: 'Dzień dobry, chcemy urządzić salę / ogródek piwny meblami z litego drewna. Prosimy o kontakt.' }
+    de: { open: 'Jetzt geöffnet', closed: 'Geschlossen', until: 'bis 17 Uhr', appt: 'nach telefonischer Vereinbarung', opens: 'öffnet', today: 'heute', tomorrow: 'morgen', mon: 'Montag', at: 'um', free: 'Lieferung kostenlos', cost: 'Lieferung ca.', ask: 'Preis für die Lieferung auf Anfrage', km: 'ca. {k} km Straße von Kirkel', min: 'Unter 1.000 € Einkaufswert: Lieferpreis bitte kurz anfragen.', yours: 'Ihr Ort', pick: 'Ort antippen oder Nadel setzen', sent: 'Danke! Ihre Anfrage ist angekommen.', askMsg: 'Hallo, ich interessiere mich für: {n}. Bitte um Preis und Verfügbarkeit.', dealMsg: 'Hallo, ich interessiere mich für Restposten / Sonderangebote. Was ist noch da?', toPlan: '„{n}“ steht jetzt in Ihrem Garten – ziehen Sie es an die richtige Stelle.', gaMsg: 'Hallo, wir möchten eine Gaststube / einen Biergarten mit Massivholz einrichten. Bitte um einen Rückruf.' },
+    pl: { open: 'Teraz otwarte', closed: 'Zamknięte', until: 'do 17:00', appt: 'po umówieniu telefonicznym', opens: 'otwarcie', today: 'dziś', tomorrow: 'jutro', mon: 'w poniedziałek', at: 'o', free: 'Dostawa bezpłatna', cost: 'Dostawa ok.', ask: 'Cena dostawy na zapytanie', km: 'ok. {k} km drogą od Kirkel', min: 'Przy zakupach poniżej 1000 €: prosimy zapytać o cenę dostawy.', yours: 'Twoje miejsce', pick: 'Dotknij miejscowości albo postaw pinezkę', sent: 'Dziękujemy! Twoje zapytanie dotarło.', askMsg: 'Dzień dobry, interesuje mnie: {n}. Proszę o cenę i dostępność.', dealMsg: 'Dzień dobry, interesują mnie ostatnie sztuki / oferty specjalne. Co jeszcze jest dostępne?', toPlan: '„{n}” stoi teraz w Twoim ogrodzie – przeciągnij w odpowiednie miejsce.', gaMsg: 'Dzień dobry, chcemy urządzić salę / ogródek piwny meblami z litego drewna. Prosimy o kontakt.' }
   };
   let LANG = 'de';
   const tr = (k, o = {}) => (T[LANG][k] || T.de[k] || k).replace(/\{(\w+)\}/g, (m, x) => o[x] ?? m);
@@ -25,7 +25,7 @@
     $$('[data-pla]').forEach(el => { if (el.dataset.dea === undefined) el.dataset.dea = el.getAttribute('aria-label') || ''; el.setAttribute('aria-label', LANG === 'pl' ? el.dataset.pla : el.dataset.dea); });
     $$('[data-plt]').forEach(el => { if (el.dataset.det === undefined) el.dataset.det = el.getAttribute('title') || ''; el.setAttribute('title', LANG === 'pl' ? el.dataset.plt : el.dataset.det); });
     $$('[data-lang]').forEach(b => { const on = b.dataset.lang === LANG; b.classList.toggle('on', on); b.setAttribute('aria-pressed', on); });
-    const fl = $('[data-flang]'); if (fl) fl.value = LANG.toUpperCase();
+    const fl = $('[data-flang]'); if (fl) fl.value = LANG === 'pl' ? 'polski' : 'niemiecki'; // Feld „Język“ der Anfrage-Mail (polnisch)
     if (!initial || qLang) store.set('gt-lang', LANG); // Sprache aus ?lang= merken (Impressum, Datenschutz, nach dem Absenden)
     document.dispatchEvent(new CustomEvent('gt-lang', { detail: LANG }));
     status();
@@ -69,7 +69,7 @@
     $$('a', mnav).forEach(a => a.addEventListener('click', () => { mnav.hidden = true; burger.setAttribute('aria-expanded', false); }));
   }
 
-  /* ---------------- Öffnungszeiten live (Mo–Sa 8:30–18:30, Europe/Berlin) ---------------- */
+  /* ---------------- Öffnungszeiten live (Mo–Fr 9–17 Uhr, abends und am Wochenende nach Vereinbarung, Europe/Berlin) ---------------- */
   function berlinNow() {
     const p = new Intl.DateTimeFormat('en-GB', { timeZone: 'Europe/Berlin', weekday: 'short', hour: '2-digit', minute: '2-digit', hour12: false }).formatToParts(new Date());
     const g = k => (p.find(x => x.type === k) || {}).value;
@@ -77,12 +77,12 @@
     return { d: wd, m: (+g('hour') % 24) * 60 + +g('minute') };
   }
   function status() {
-    const { d, m } = berlinNow(); const open = d >= 1 && d <= 6 && m >= 510 && m < 1110;
+    const { d, m } = berlinNow(); const open = d >= 1 && d <= 5 && m >= 540 && m < 1020;
     let sub;
     if (open) sub = tr('until');
-    else if (d >= 1 && d <= 6 && m < 510) sub = `${tr('opens')} ${tr('today')} ${tr('at')} 8:30`;
-    else if (d === 6 || d === 0) sub = `${tr('opens')} ${tr('mon')} ${tr('at')} 8:30`;
-    else sub = `${tr('opens')} ${tr('tomorrow')} ${tr('at')} 8:30`;
+    else if (d >= 1 && d <= 5 && m < 540) sub = `${tr('opens')} ${tr('today')} ${tr('at')} 9:00`;
+    else if (d >= 5 || d === 0) sub = `${tr('appt')} · ${tr('opens')} ${tr('mon')} ${tr('at')} 9:00`;
+    else sub = `${tr('appt')} · ${tr('opens')} ${tr('tomorrow')} ${tr('at')} 9:00`;
     const pill = $('[data-nowpill]'); if (pill) { pill.classList.toggle('open', open); $('b', pill).textContent = open ? tr('open') : tr('closed'); }
     const nw = $('[data-now]'); if (nw) { nw.classList.toggle('open', open); $('[data-now-t]', nw).textContent = open ? tr('open') : tr('closed'); $('[data-now-s]', nw).textContent = '· ' + sub; }
     $$('[data-hours] li').forEach(li => li.classList.toggle('today', +li.dataset.day === d));
@@ -645,8 +645,7 @@
     const road = (pts, lbl, li) => { const d = pts.map((p, i) => { const [x, y] = prj(...p); return (i ? 'L' : 'M') + x.toFixed(1) + ' ' + y.toFixed(1); }).join(' '); el('path', { d, fill: 'none', stroke: '#fff', 'stroke-width': 6, 'stroke-linecap': 'round', 'stroke-linejoin': 'round' }); el('path', { d, fill: 'none', stroke: '#e6b25f', 'stroke-width': 2.5, 'stroke-linecap': 'round', 'stroke-linejoin': 'round' }); const [lx, ly] = prj(...pts[li ?? Math.floor(pts.length / 2)]); const g = el('g', { transform: `translate(${lx} ${ly})` }); el('rect', { x: -13, y: -9, width: 26, height: 18, rx: 4, fill: '#2f5fb3' }, g); el('text', { x: 0, y: 4.5, 'text-anchor': 'middle', fill: '#fff', style: 'font:600 11px Familjen,sans-serif' }, g).textContent = lbl; };
     road([[49.234, 6.996], [49.262, 7.06], [49.28, 7.12], [49.297, 7.21], [49.31, 7.29], [49.33, 7.34], [49.385, 7.36], [49.41, 7.52], [49.44, 7.77]], 'A6', 1);
     road([[49.346, 7.18], [49.33, 7.25], [49.30, 7.30], [49.27, 7.33], [49.249, 7.36]], 'A8', 3);
-    const ringR = 8 * S; el('circle', { cx: sx, cy: sy, r: ringR, class: 'ring' });
-    const rl = el('text', { x: sx, y: sy - ringR - 6, 'text-anchor': 'middle', style: 'font:500 11px Mono,monospace', fill: '#4f7a1e' }); rl.textContent = '10 km';
+    // Seit 17.10.2026: ab 1.000 € bis 50 km kostenlos – der ganze Kartenausschnitt liegt darin, deshalb kein Ring mehr
     const route = el('path', { class: 'route', d: '' });
     const truck = el('g', { opacity: 0 }); el('rect', { x: -11, y: -9, width: 15, height: 10, rx: 2, fill: '#c4843f' }, truck); el('path', { d: 'M4 -6 h5 l4 4 v3 h-9z', fill: '#1d140d' }, truck); el('circle', { cx: -7, cy: 2, r: 2.6, fill: '#1d140d' }, truck); el('circle', { cx: 8, cy: 2, r: 2.6, fill: '#1d140d' }, truck);
     const towns = [];
@@ -663,7 +662,7 @@
       if (!sel) { res.textContent = tr('pick'); sub.textContent = ''; return; }
       const km = Math.max(1, Math.round(hav(shop, sel.ll) * 1.25));
       if (v < 1000) { res.textContent = tr('ask'); sub.textContent = sel.n + ' · ' + tr('km', { k: km }) + ' — ' + tr('min'); return; }
-      const c = Math.max(0, km - 10);
+      const c = Math.max(0, km - 50);
       res.textContent = c === 0 ? tr('free') : tr('cost') + ' ' + fmt(c) + ',00 €';
       sub.textContent = sel.n + ' · ' + tr('km', { k: km });
     }
@@ -713,13 +712,42 @@
     form.addEventListener('submit', async e => {
       $('[data-next]', form).value = location.href.split('#')[0].split('?')[0] + '?gesendet=1#kontakt';
       if (window.GTP && window.GTP.hasItems()) {
-        $('[data-plantext]', form).value = window.GTP.summary();
+        $('[data-plantext]', form).value = window.GTP.summary('pl');
         if (window.GTP.attach && window.DataTransfer) {
           e.preventDefault(); const btn = $('[data-ksend]', form); btn.disabled = true;
-          try { const blob = await window.GTP.getBlob(); const dt = new DataTransfer(); dt.items.add(new File([blob], 'garten-entwurf.jpg', { type: 'image/jpeg' })); $('[data-planfile]', form).files = dt.files; } catch (er) {}
+          try { const blob = await window.GTP.getBlob(); const dt = new DataTransfer(); dt.items.add(new File([blob], 'projekt-ogrodu.jpg', { type: 'image/jpeg' })); $('[data-planfile]', form).files = dt.files; } catch (er) {}
           HTMLFormElement.prototype.submit.call(form);
         }
       }
+    });
+    /* Die Anfrage-Mail liest der Inhaber – auf Polnisch. Darum kommt sie komplett polnisch an, egal in welcher Sprache
+       der Kunde die Seite benutzt: Betreff mit Kundenname, oben eine polnische Erklärung (antworten, übersetzen, anrufen),
+       polnische Feldnamen und Auswahl, feste Reihenfolge, leere Felder fallen weg. Ohne „formdata“ (sehr alte Browser)
+       geht das Formular so, wie es im HTML steht – ebenfalls mit polnischen Feldnamen. */
+    form.addEventListener('formdata', e => {
+      const fd = e.formData, src = [...fd.entries()];
+      const val = k => { const f = src.find(([n]) => n === k); return f ? f[1] : ''; };
+      const txt = k => { const v = val(k); return typeof v === 'string' ? v.trim() : ''; };
+      const de = LANG !== 'pl', name = txt('Klient'), tel = txt('Telefon'), plan = txt('Projekt');
+      const file = val('attachment'), hasFile = file instanceof File && file.size > 0;
+      const ints = $$('[data-int] input:checked', form).map(i => i.dataset.plv || i.value).join(', ');
+      // Nur Sätze, die FormSubmit nachweislich durchlässt (Tests 17.10., 20:05–20:20). FormSubmit verwirft Anfragen u. a. mit
+      // Domainnamen, „ze strony internetowej …“ und „Angielskie zdania … serwis formularza“ – neue Sätze vorher einzeln testen.
+      const info = [de ? 'Klient napisał po niemiecku – żeby przetłumaczyć wiadomość, zaznacz tekst i wybierz „Przetłumacz”.' : 'Klient napisał po polsku.',
+        'Żeby odpowiedzieć, kliknij „Odpowiedz” (w poczcie IONOS w przeglądarce: „Antworten”) – e-mail trafi prosto do klienta' + (de ? ', najlepiej po niemiecku.' : '.'),
+        tel ? `Możesz też zadzwonić: ${tel}.` : '',
+        hasFile ? 'Projekt ogrodu klienta jest w załączniku.' : '',
+        'Tekst po angielsku nad tabelą i pod nią można pominąć.'].filter(Boolean).join(' ');
+      new Set(src.map(([n]) => n)).forEach(k => fd.delete(k));
+      const put = (k, v) => { if (typeof v === 'string' && v.trim()) fd.append(k, v); };
+      put('_subject', `Nowe zapytanie: ${name || 'klient'} (pisze po ${de ? 'niemiecku' : 'polsku'})`);
+      ['_template', '_captcha', '_next'].forEach(k => put(k, txt(k)));
+      fd.append('_honey', txt('_honey'));
+      put('Informacja', info); put('Język', de ? 'niemiecki' : 'polski');
+      put('Klient', name); put('Telefon', tel); put('email', txt('email'));
+      put('Zainteresowanie', ints); put('Wiadomość', txt('Wiadomość'));
+      put('Projekt', plan ? plan + (hasFile ? ' – zdjęcie w załączniku' : '') : '');
+      if (hasFile) fd.append('attachment', file, file.name);
     });
     if (/[?&]gesendet=1/.test(location.search)) { $('[data-kok]').hidden = false; setTimeout(() => toast(tr('sent')), 800); }
   }
