@@ -25,7 +25,7 @@
     $$('[data-pla]').forEach(el => { if (el.dataset.dea === undefined) el.dataset.dea = el.getAttribute('aria-label') || ''; el.setAttribute('aria-label', LANG === 'pl' ? el.dataset.pla : el.dataset.dea); });
     $$('[data-plt]').forEach(el => { if (el.dataset.det === undefined) el.dataset.det = el.getAttribute('title') || ''; el.setAttribute('title', LANG === 'pl' ? el.dataset.plt : el.dataset.det); });
     $$('[data-lang]').forEach(b => { const on = b.dataset.lang === LANG; b.classList.toggle('on', on); b.setAttribute('aria-pressed', on); });
-    const fl = $('[data-flang]'); if (fl) fl.value = LANG === 'pl' ? 'polski' : 'niemiecki'; // Feld „Język“ der Anfrage-Mail (polnisch)
+    const fl = $('[data-flang]'); if (fl) fl.value = LANG.toUpperCase();
     if (!initial || qLang) store.set('gt-lang', LANG); // Sprache aus ?lang= merken (Impressum, Datenschutz, nach dem Absenden)
     document.dispatchEvent(new CustomEvent('gt-lang', { detail: LANG }));
     status();
@@ -713,41 +713,13 @@
     form.addEventListener('submit', async e => {
       $('[data-next]', form).value = location.href.split('#')[0].split('?')[0] + '?gesendet=1#kontakt';
       if (window.GTP && window.GTP.hasItems()) {
-        $('[data-plantext]', form).value = window.GTP.summary('pl');
+        $('[data-plantext]', form).value = window.GTP.summary();
         if (window.GTP.attach && window.DataTransfer) {
           e.preventDefault(); const btn = $('[data-ksend]', form); btn.disabled = true;
-          try { const blob = await window.GTP.getBlob(); const dt = new DataTransfer(); dt.items.add(new File([blob], 'projekt-ogrodu.jpg', { type: 'image/jpeg' })); $('[data-planfile]', form).files = dt.files; } catch (er) {}
+          try { const blob = await window.GTP.getBlob(); const dt = new DataTransfer(); dt.items.add(new File([blob], 'garten-entwurf.jpg', { type: 'image/jpeg' })); $('[data-planfile]', form).files = dt.files; } catch (er) {}
           HTMLFormElement.prototype.submit.call(form);
         }
       }
-    });
-    /* Die Anfrage-Mail liest der Inhaber – auf Polnisch. Darum kommt sie komplett polnisch an, egal in welcher Sprache
-       der Kunde die Seite benutzt: Betreff mit Kundenname, oben eine polnische Erklärung (antworten, übersetzen, anrufen),
-       polnische Feldnamen und Auswahl, feste Reihenfolge, leere Felder fallen weg. Ohne „formdata“ (sehr alte Browser)
-       geht das Formular so, wie es im HTML steht – ebenfalls mit polnischen Feldnamen. */
-    form.addEventListener('formdata', e => {
-      const fd = e.formData, src = [...fd.entries()];
-      const val = k => { const f = src.find(([n]) => n === k); return f ? f[1] : ''; };
-      const txt = k => { const v = val(k); return typeof v === 'string' ? v.trim() : ''; };
-      const de = LANG !== 'pl', name = txt('Klient'), tel = txt('Telefon'), plan = txt('Projekt');
-      const file = val('attachment'), hasFile = file instanceof File && file.size > 0;
-      const ints = $$('[data-int] input:checked', form).map(i => i.dataset.plv || i.value).join(', ');
-      const info = ['To jest nowe zapytanie ze strony internetowej Der Garten-Traum.', // bewusst ohne Domainname – sonst verwirft FormSubmit die Anfrage
-        de ? 'Klient napisał po niemiecku – żeby przetłumaczyć wiadomość, zaznacz tekst i wybierz „Przetłumacz”.' : 'Klient napisał po polsku.',
-        'Żeby odpowiedzieć, kliknij „Odpowiedz” (w poczcie IONOS w przeglądarce: „Antworten”) – e-mail trafi prosto do klienta' + (de ? ', najlepiej po niemiecku.' : '.'),
-        tel ? `Możesz też zadzwonić: ${tel}.` : '',
-        hasFile ? 'Projekt ogrodu, który klient ułożył na stronie, jest w załączniku.' : '',
-        'Angielskie zdania w tym e-mailu dodaje automatycznie serwis formularza – można je pominąć.'].filter(Boolean).join(' ');
-      new Set(src.map(([n]) => n)).forEach(k => fd.delete(k));
-      const put = (k, v) => { if (typeof v === 'string' && v.trim()) fd.append(k, v); };
-      put('_subject', `Nowe zapytanie: ${name || 'klient'} (pisze po ${de ? 'niemiecku' : 'polsku'})`);
-      ['_template', '_captcha', '_next'].forEach(k => put(k, txt(k)));
-      fd.append('_honey', txt('_honey'));
-      put('Informacja', info); put('Język', de ? 'niemiecki' : 'polski');
-      put('Klient', name); put('Telefon', tel); put('email', txt('email'));
-      put('Zainteresowanie', ints); put('Wiadomość', txt('Wiadomość'));
-      put('Projekt', plan ? plan + (hasFile ? ' – zdjęcie w załączniku' : '') : '');
-      if (hasFile) fd.append('attachment', file, file.name);
     });
     if (/[?&]gesendet=1/.test(location.search)) { $('[data-kok]').hidden = false; setTimeout(() => toast(tr('sent')), 800); }
   }
