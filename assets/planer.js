@@ -327,7 +327,7 @@
   hzEl.addEventListener('pointerup', () => { hzDrag = null; hzEl.classList.remove('on'); persist(); });
 
   /* ---------- Ablage: antippen oder ins Bild ziehen ---------- */
-  $$('.pl-cats [data-cat]').forEach(b => b.addEventListener('click', () => { trayTouched = true; $$('.pl-cats [data-cat]').forEach(x => x.classList.toggle('on', x === b)); const c = b.dataset.cat; $$('[data-add]').forEach(t => t.hidden = !(c === 'all' || t.dataset.cat === c)); trayEl.scrollLeft = 0; trayEdge(); }));
+  $$('.pl-cats [data-cat]').forEach(b => b.addEventListener('click', () => { trayTouched = true; $$('.pl-cats [data-cat]').forEach(x => x.classList.toggle('on', x === b)); const c = b.dataset.cat; $$('[data-add]').forEach(t => t.hidden = !(c === 'all' || t.dataset.cat === c || (c === 'neu' && 'neu' in t.dataset))); trayEl.scrollLeft = 0; trayEdge(); }));
   // Möbel-Leiste: Pfeile + Auslaufkanten, einmal kurz anschieben – damit klar ist, dass es noch mehr gibt
   const trayEl = $('[data-tray]'), trayBox = $('.pl-tray'); let trayTouched = false;
   function trayEdge() { const m = trayEl.scrollWidth - trayEl.clientWidth; trayBox.classList.toggle('tr-s', trayEl.scrollLeft > 4); trayBox.classList.toggle('tr-e', trayEl.scrollLeft < m - 4); }
@@ -387,7 +387,7 @@
 
   const rkey = () => avail() + '|' + (innerWidth < 640 ? 0 : innerHeight);
   let rw = ''; addEventListener('resize', () => { const k = rkey(); if (k !== rw) { rw = k; resize(); } });
-  const io = new IntersectionObserver(([en]) => { if (en.isIntersecting) { io.disconnect(); rw = rkey(); resize(); if (!S.items.length) { seeding = true; add('set4', .4, .86); add('adler', .78, .74); seeding = false; sel = -1; hist.length = 0; demo = true; persist(); draw(); } } }, { rootMargin: '400px' });
+  const io = new IntersectionObserver(([en]) => { if (en.isIntersecting) { io.disconnect(); rw = rkey(); resize(); if (!S.items.length) { seeding = true; add('tafel_lang', .4, .86); add('hund_sitz', .8, .76); seeding = false; sel = -1; hist.length = 0; demo = true; persist(); draw(); } } }, { rootMargin: '400px' });
   io.observe(stage);
   /* ---------- Impuls beim ersten Sichtkontakt: Sonne wandert einmal, eine Hand schiebt den Tisch, die Leiste rollt an ---------- */
   function demoRun() {
