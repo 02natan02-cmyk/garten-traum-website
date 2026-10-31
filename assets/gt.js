@@ -199,6 +199,38 @@
     let rw = innerWidth; addEventListener('resize', () => { if (Math.abs(innerWidth - rw) > 40) { rw = innerWidth; go(); } });
   }
 
+  /* ================= SAISONSCHLUSSVERKAUF: echte Fotos, wischen, kippen, in den Garten stellen ================= */
+  const sale = $('[data-sale]');
+  if (sale) {
+    const rail = $('[data-salerail]', sale), cards = $$('.sc', sale), sn = $('[data-sn]', sale);
+    let sawIn = false;
+    inView(sale, v => { if (v && !sawIn) { sawIn = true; sale.classList.add('in'); } }, '-15% 0px');
+    const par = () => {
+      const r = rail.getBoundingClientRect(), cx = r.left + r.width / 2; let best = 0, bd = 1e9;
+      cards.forEach((c, i) => { const b = c.getBoundingClientRect(), d = (b.left + b.width / 2 - cx); if (Math.abs(d) < bd) { bd = Math.abs(d); best = i; } if (!RM) c.style.setProperty('--px', (Math.max(-1, Math.min(1, d / r.width)) * -16).toFixed(1) + 'px'); });
+      if (sn) sn.textContent = String(best + 1).padStart(2, '0');
+      return best;
+    };
+    let raf = 0; rail.addEventListener('scroll', () => { if (!raf) raf = requestAnimationFrame(() => { raf = 0; par(); }); }, { passive: true }); par();
+    const go = d => { const i = Math.max(0, Math.min(cards.length - 1, par() + d)); const c = cards[i]; rail.scrollTo({ left: c.offsetLeft - (rail.clientWidth - c.offsetWidth) / 2, behavior: RM ? 'auto' : 'smooth' }); nudgeOff('sale'); };
+    $$('[data-sstep]', sale).forEach(b => b.addEventListener('click', () => go(+b.dataset.sstep)));
+    rail.addEventListener('keydown', e => { if (e.key === 'ArrowRight') { e.preventDefault(); go(1); } if (e.key === 'ArrowLeft') { e.preventDefault(); go(-1); } });
+    // Maus: ziehen wie am Handy
+    let dr = null, moved = false;
+    rail.addEventListener('pointerdown', e => { if (e.pointerType !== 'mouse' || e.button !== 0 || e.target.closest('a,.sc-acts')) return; dr = { x: e.clientX, l: rail.scrollLeft }; moved = false; });
+    addEventListener('pointermove', e => { if (!dr) return; const dx = e.clientX - dr.x; if (Math.abs(dx) > 5) { moved = true; rail.classList.add('drag'); nudgeOff('sale'); } if (moved) rail.scrollLeft = dr.l - dx; });
+    addEventListener('pointerup', () => { if (!dr) return; dr = null; if (moved) { rail.classList.remove('drag'); go(0); setTimeout(() => moved = false, 50); } });
+    rail.addEventListener('touchstart', () => nudgeOff('sale'), { passive: true });
+    // Karten kippen mit der Maus
+    if (!RM && matchMedia('(hover:hover)').matches) cards.forEach(c => {
+      c.addEventListener('pointermove', e => { if (dr) return; const b = c.getBoundingClientRect(), x = (e.clientX - b.left) / b.width - .5, y = (e.clientY - b.top) / b.height - .5; c.classList.add('tilt'); c.style.setProperty('--ry', (x * 10).toFixed(2) + 'deg'); c.style.setProperty('--rx', (-y * 8).toFixed(2) + 'deg'); });
+      c.addEventListener('pointerleave', () => { c.classList.remove('tilt'); c.style.setProperty('--ry', '0deg'); c.style.setProperty('--rx', '0deg'); });
+    });
+    const keys = G.sale || [];
+    $$('[data-saleph]', sale).forEach(b => b.addEventListener('click', e => { if (moved) { e.preventDefault(); return; } nudgeOff('sale'); if (window.GTopenSet) window.GTopenSet(keys, +b.dataset.saleph); }));
+    $$('[data-saleplan]', sale).forEach(b => b.addEventListener('click', () => { if (window.GTtoPlanner) window.GTtoPlanner(b.dataset.saleplan); }));
+  }
+
   /* ================= KAPITEL 1: Säge ================= */
   const sawSec = $('[data-sawsec]');
   if (sawSec) {
@@ -354,6 +386,7 @@
   function openLB(i) { lbi = i; showLB(); lb.hidden = false; document.body.style.overflow = 'hidden'; $('[data-lbx]').focus(); }
   function closeLB() { lb.hidden = true; document.body.style.overflow = ''; if (lbBack) { LBlist = lbBack; lbBack = null; } }
   // eigene Bildfolge öffnen (z. B. Gastronomie), danach wieder der Rundgang
+  window.GTopenSet = (k, i) => openSet(k, i);
   function openSet(keys, i) { const P = G.photos || []; lbBack = LBlist; LBlist = keys.map(k => { const p = P.find(x => x[0] === k) || [k, '', '']; return { src: 'img/f/' + k + '.webp', de: p[1], pl: p[2] }; }); openLB(i); }
   if (lb) {
     $('[data-lbx]').addEventListener('click', closeLB);

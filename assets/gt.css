@@ -535,7 +535,7 @@ input,textarea{font:inherit}
 .rv.in{opacity:1;transform:none}
 
 /* ---------- Responsive ---------- */
-@media (max-width:1100px){
+@media (max-width:1160px){
   .nav{display:none}.burger{display:flex}.hdr-in{justify-content:space-between}.now{display:none}
 }
 @media (max-width:1000px){
@@ -747,3 +747,46 @@ input,textarea{font:inherit}
 
 .tr-it{position:relative}.tr-neu{position:absolute;top:4px;left:4px;font:600 9px/1 var(--fb);letter-spacing:.06em;text-transform:uppercase;background:var(--ember);color:#fff;padding:3px 6px;border-radius:20px;pointer-events:none}.pl-cats .pc-neu{border-color:var(--ember)}.pl-cats .pc-neu::before{content:'';display:inline-block;width:7px;height:7px;border-radius:50%;background:var(--ember);margin-right:6px;vertical-align:1px}
 @media (max-width:480px){.hdr .home-t{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}.hdr .home{padding-left:12px;padding-right:12px}.legal h1{font-size:clamp(30px,9.5vw,44px);overflow-wrap:anywhere;hyphens:auto}}
+/* ===== Saisonschlussverkauf (31.10.2026) ===== */
+.sale-seal{position:absolute;z-index:6;right:clamp(4px,3vw,40px);top:clamp(6px,4vw,48px);width:clamp(112px,11vw,150px);aspect-ratio:1;border-radius:50%;background:radial-gradient(circle at 35% 30%,#ff9a4d,var(--ember) 55%,#c94409);color:#fff;display:grid;place-items:center;text-decoration:none;box-shadow:0 18px 40px -14px rgba(255,106,26,.85),inset 0 0 0 5px rgba(255,255,255,.14);transform:rotate(-10deg);transition:transform .35s cubic-bezier(.2,1.4,.4,1)}
+.sale-seal:hover{transform:rotate(-4deg) scale(1.07)}
+.sale-seal svg{position:absolute;inset:0;width:100%;height:100%;animation:ssrot 18s linear infinite}
+.sale-seal text{font:600 13.5px var(--fm);letter-spacing:.16em;fill:#fff}
+.sale-seal b{font:400 clamp(19px,1.9vw,25px)/.95 var(--fd);text-align:center;display:flex;flex-direction:column;text-shadow:0 2px 6px rgba(0,0,0,.25)}
+@keyframes ssrot{to{transform:rotate(360deg)}}
+.sale{position:relative;overflow:hidden;background:var(--char);color:var(--paper);padding:clamp(70px,8vw,120px) 0 clamp(50px,6vw,80px)}
+.sale-glow{position:absolute;inset:0;pointer-events:none;background:radial-gradient(60% 50% at 70% 60%,rgba(255,106,26,.22),transparent 70%),radial-gradient(50% 40% at 10% 10%,rgba(156,194,90,.12),transparent 70%)}
+.sale-head{position:relative;display:grid;grid-template-columns:1.1fr .9fr;gap:clamp(20px,4vw,60px);align-items:end}
+.sale-head .kick{color:var(--ember2)}.sale-head .h2{color:var(--paper)}.sale-head .h2 em{font-style:normal;color:var(--ember)}.sale-head .lead{color:#d8c6ad}
+.sale-dot{width:9px;height:9px;border-radius:50%;background:var(--ember);box-shadow:0 0 0 0 rgba(255,106,26,.7);animation:sdot 1.8s infinite}
+@keyframes sdot{70%{box-shadow:0 0 0 12px rgba(255,106,26,0)}100%{box-shadow:0 0 0 0 rgba(255,106,26,0)}}
+.sale-stage{position:relative;margin-top:clamp(26px,3vw,44px)}
+.sale-rail{display:flex;align-items:flex-start;gap:clamp(14px,1.6vw,24px);overflow-x:auto;scroll-snap-type:x mandatory;padding:20px max(var(--gut),calc((100vw - 1420px)/2 + var(--gut))) 40px;scrollbar-width:none;cursor:grab;perspective:1200px;outline:none}
+.sale-rail::-webkit-scrollbar{display:none}
+.sale-rail.drag{cursor:grabbing;scroll-snap-type:none}.sale-rail.drag .sc{transition:none}
+.sc{flex:0 0 clamp(230px,22vw,300px);scroll-snap-align:center;background:var(--paper);color:var(--ink);border-radius:18px;overflow:hidden;box-shadow:0 30px 60px -28px rgba(0,0,0,.9),0 0 0 1px rgba(255,210,154,.08);transform:perspective(900px) rotateX(var(--rx,0deg)) rotateY(var(--ry,0deg)) translateY(var(--ty,60px)) scale(var(--sc,.94));opacity:var(--op,0);transition:transform .7s cubic-bezier(.2,.9,.25,1) calc(var(--i)*55ms),opacity .6s ease calc(var(--i)*55ms),box-shadow .3s;will-change:transform}
+.sale.in .sc{--ty:0px;--sc:1;--op:1}
+.sale.in .sc.tilt{transition:transform .15s ease-out,box-shadow .3s}
+.sc:hover{box-shadow:0 40px 70px -26px rgba(0,0,0,.95),0 0 0 2px rgba(255,138,61,.55)}
+.sc-ph{position:relative;display:block;width:100%;aspect-ratio:3/4;border:0;padding:0;overflow:hidden;background:#2a2016;cursor:zoom-in}
+.sc-ph img{position:absolute;inset:0 -5%;width:110%;height:100%;object-fit:cover;transform:translateX(var(--px,0px)) scale(1.02);transition:transform .2s linear;pointer-events:none}
+.sc-ph::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,transparent 60%,rgba(22,16,11,.45));pointer-events:none}
+.sc-tag{position:absolute;z-index:2;left:12px;top:12px;font:600 11px/1 var(--fm);letter-spacing:.12em;text-transform:uppercase;background:var(--ember);color:#fff;padding:7px 10px;border-radius:999px;font-style:normal;box-shadow:0 6px 16px -6px rgba(255,106,26,.8)}
+.sc-no{position:absolute;z-index:2;right:14px;bottom:10px;font:400 44px/1 var(--fd);color:rgba(255,245,230,.92);font-style:normal;text-shadow:0 2px 10px rgba(0,0,0,.5)}
+.sc-b{padding:16px 18px 18px}
+.sc-b h3{font:400 clamp(21px,1.7vw,25px)/1.08 var(--fd);margin:0 0 6px;color:var(--ink)}
+.sc-b p{margin:0 0 14px;font-size:14.5px;line-height:1.45;color:var(--ink2);min-height:2.9em}
+.sc-acts{display:flex;gap:8px;flex-wrap:wrap}
+.sc-acts .b{min-height:42px;padding:0 16px;font-size:14px}
+.sc-acts .b-ghost{color:var(--ink);box-shadow:inset 0 0 0 2px rgba(29,20,13,.18)}
+.sale-n{left:50%;bottom:6px;translate:-50% 10px}
+.sale-n.on{translate:-50% 0}
+.sale-foot{position:relative;display:flex;align-items:center;justify-content:space-between;gap:20px;flex-wrap:wrap}
+.sale-ctl{display:flex;align-items:center;gap:14px;font:500 14px var(--fm);color:#d8c6ad}
+.sale-ctl b{color:var(--paper);font-weight:500}
+
+.sc-l{flex-basis:clamp(330px,34vw,470px)}.sc-l .sc-ph{aspect-ratio:4/3}
+@media (max-width:900px){.sale-head{grid-template-columns:1fr}.sc-p{flex-basis:min(62vw,280px)}.sc-l{flex-basis:min(86vw,400px)}}
+@media (max-width:640px){.sale-foot{flex-direction:column;align-items:stretch}.sale-foot .ctas{flex-direction:column}.sale-ctl{justify-content:center}.sale-seal{width:96px;top:-6px;right:0}.sale-seal text{font-size:15px}.sale-seal b{font-size:17px}}
+@media (prefers-reduced-motion:reduce){.sc{--ty:0px;--sc:1;--op:1;transition:none}.sale-seal svg,.sale-dot{animation:none}}
+@media (min-width:1161px) and (max-width:1360px){.nav{gap:2px}.nav a{padding-left:9px;padding-right:9px}.now{display:none}.hdr-in{gap:14px}}
